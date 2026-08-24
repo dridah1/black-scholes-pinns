@@ -118,7 +118,16 @@ def main():
         hidden_dim=50,
         num_hidden_layers=9
     ).to(device)
+        # =========================
+    # Optimizer
+    # =========================
 
+    optimizer = torch.optim.Adam(
+        model.parameters(),
+        lr=learning_rate
+    )
+    print("Optimizer: Adam")
+    print(f"Learning rate: {learning_rate}")
     print(model)
 if __name__ == "__main__":
     main()
