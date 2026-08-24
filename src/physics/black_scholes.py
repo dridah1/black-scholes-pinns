@@ -1,4 +1,6 @@
 import torch
+import numpy as np
+from scipy.stats import norm
 
 
 def black_scholes_residual(model, x, sigma, r, dividend=0.0):
@@ -82,6 +84,72 @@ def european_call_payoff(S, K):
     torch.Tensor
         European call payoff.
     """
+def analytical_call_price(S, t, K, r, sigma, T, dividend=0.0):
+    """
+    Analytical Black-Scholes price of a European call option.
+
+    Parameters
+    ----------
+    S : array-like
+        Underlying asset price.
+
+    t : array-like
+        Current time.
+
+    K : float
+        Strike price.
+
+    r : float
+        Risk-free interest rate.
+
+    sigma : float
+        Volatility.
+
+    T : float
+        Maturity.
+
+    dividend : float
+        Continuous dividend yield.
+
+    Returns
+    -------
+    numpy.ndarray
+        Analytical European call price.
+    """
+
+    S = np.asarray(S, dtype=float)
+    t = np.asarray(t, dtype=float)
+
+    tau = T - t
+
+    # Avoid division by zero exactly at maturity.
+    tau_safe = np.maximum(tau, 1e-12)
+
+    d1 = (
+        np.log(S / K)
+        + (r - dividend + 0.5 * sigma**2) * tau_safe
+    ) / (
+        sigma * np.sqrt(tau_safe)
+    )
+
+    d2 = d1 - sigma * np.sqrt(tau_safe)
+
+    price = (
+        S * np.exp(-dividend * tau_safe) * norm.cdf(d1)
+        - K * np.exp(-r * tau_safe) * norm.cdf(d2)
+    )
+
+    # At maturity, enforce the exact payoff.
+    maturity_mask = tau <= 0
+
+    if np.any(maturity_mask):
+        price = np.asarray(price)
+        price[maturity_mask] = np.maximum(
+            S[maturity_mask] - K,
+            0.0
+        )
+
+    return price
 
     return torch.maximum(
         S - K,
