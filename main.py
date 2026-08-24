@@ -141,7 +141,7 @@ def main():
         model.parameters(),
         lr=learning_rate
     )
-        # =========================
+         # =========================
     # Trainer
     # =========================
 
@@ -160,8 +160,10 @@ def main():
         boundary_weight=1.0,
         device=device
     )
+
     print("Trainer initialized.")
-        # =========================
+
+    # =========================
     # Training
     # =========================
 
@@ -181,8 +183,12 @@ def main():
     print(
         f"Final total loss: "
         f"{history['total_loss'][-1]:.6e}"
-    )    print("Optimizer: Adam")
+    )
+
+    print("Optimizer: Adam")
     print(f"Learning rate: {learning_rate}")
     print(model)
+
+
 if __name__ == "__main__":
     main()
