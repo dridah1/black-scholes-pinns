@@ -87,3 +87,35 @@ def european_call_payoff(S, K):
         S - K,
         torch.zeros_like(S)
     )
+def call_upper_boundary(S, t, K, r, T):
+    """
+    Large-asset-price boundary condition for a European call.
+
+    For sufficiently large S:
+
+        V(S,t) ≈ S - K exp(-r(T-t))
+
+    Parameters
+    ----------
+    S : torch.Tensor
+        Underlying asset prices.
+
+    t : torch.Tensor
+        Time.
+
+    K : float
+        Strike price.
+
+    r : float
+        Risk-free interest rate.
+
+    T : float
+        Maturity.
+
+    Returns
+    -------
+    torch.Tensor
+        Approximate upper boundary value.
+    """
+
+    return S - K * torch.exp(-r * (T - t))
