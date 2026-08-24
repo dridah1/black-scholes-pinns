@@ -1,14 +1,14 @@
 import torch
 
 
-def black_scholes_residual(model, x, sigma, r):
+def black_scholes_residual(model, x, sigma, r, dividend=0.0):
     """
     Compute the Black-Scholes PDE residual.
 
     The Black-Scholes PDE is:
 
         V_t + 0.5 * sigma^2 * S^2 * V_SS
-        + r * S * V_S - r * V = 0
+        + (r - dividend) * S * V_S - r * V = 0
 
     Parameters
     ----------
@@ -87,35 +87,3 @@ def european_call_payoff(S, K):
         S - K,
         torch.zeros_like(S)
     )
-def call_upper_boundary(S, t, K, r, T):
-    """
-    Large-asset-price boundary condition for a European call.
-
-    For sufficiently large S:
-
-        V(S,t) ≈ S - K exp(-r(T-t))
-
-    Parameters
-    ----------
-    S : torch.Tensor
-        Underlying asset prices.
-
-    t : torch.Tensor
-        Time.
-
-    K : float
-        Strike price.
-
-    r : float
-        Risk-free interest rate.
-
-    T : float
-        Maturity.
-
-    Returns
-    -------
-    torch.Tensor
-        Approximate upper boundary value.
-    """
-
-    return S - K * torch.exp(-r * (T - t))
