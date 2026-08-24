@@ -148,6 +148,23 @@ def main():
         device=device
     )
     print("Trainer initialized.")
+        # =========================
+    # Smoke test
+    # =========================
+
+    print("\nRunning one training step...")
+
+    (
+        total,
+        pde,
+        terminal,
+        boundary
+    ) = trainer.train_step()
+
+    print(f"Total loss:    {total:.6e}")
+    print(f"PDE loss:      {pde:.6e}")
+    print(f"Terminal loss: {terminal:.6e}")
+    print(f"Boundary loss: {boundary:.6e}")
     print("Optimizer: Adam")
     print(f"Learning rate: {learning_rate}")
     print(model)
