@@ -55,7 +55,8 @@ def black_scholes_residual(model, x, sigma, r, dividend=0.0):
 
     V_SS = second_gradients[:, 0:1]
 
-    S = x[:, 0:1]
+    t = x[:, 0:1]
+    S = x[:, 1:2]
 
     residual = (
         V_t
