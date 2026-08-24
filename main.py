@@ -1,6 +1,7 @@
 """
 Main entry point for the Black-Scholes PINN project.
 """
+
 import torch
 
 from src.models.pinn import BlackScholesPINN
@@ -10,6 +11,7 @@ from src.physics.data import (
     generate_terminal_points,
     generate_lower_boundary_points
 )
+from src.training.trainer import PINNTrainer
 def main():
 
     # =========================
@@ -126,6 +128,26 @@ def main():
         model.parameters(),
         lr=learning_rate
     )
+        # =========================
+    # Trainer
+    # =========================
+
+    trainer = PINNTrainer(
+        model=model,
+        optimizer=optimizer,
+        x_collocation=x_collocation,
+        x_terminal=x_terminal,
+        x_boundary=x_boundary,
+        sigma=sigma,
+        r=r,
+        K=K,
+        dividend=dividend,
+        pde_weight=100.0,
+        terminal_weight=1.0,
+        boundary_weight=1.0,
+        device=device
+    )
+    print("Trainer initialized.")
     print("Optimizer: Adam")
     print(f"Learning rate: {learning_rate}")
     print(model)
