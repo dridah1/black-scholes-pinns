@@ -55,3 +55,43 @@ def pde_loss(model, x, sigma, r, dividend=0.0):
     )
 
     return torch.mean(residual ** 2)
+def terminal_condition_loss(model, x_terminal, K):
+    """
+    Compute the terminal-condition loss for a
+    European call option.
+
+    The terminal condition is:
+
+        V(S, T) = max(S - K, 0)
+
+    Parameters
+    ----------
+    model : torch.nn.Module
+        PINN model.
+
+    x_terminal : torch.Tensor
+        Points on the terminal boundary t = T.
+        Expected ordering: [t, S].
+
+    K : float
+        Strike price.
+
+    Returns
+    -------
+    torch.Tensor
+        Mean squared terminal-condition error.
+    """
+
+    t = x_terminal[:, 0:1]
+    S = x_terminal[:, 1:2]
+
+    inputs = torch.cat((t, S), dim=1)
+
+    prediction = model(inputs)
+
+    payoff = torch.maximum(
+        S - K,
+        torch.zeros_like(S)
+    )
+
+    return mean_squared_error(prediction, payoff)
