@@ -95,3 +95,31 @@ def terminal_condition_loss(model, x_terminal, K):
     )
 
     return mean_squared_error(prediction, payoff)
+def lower_boundary_loss(model, x_boundary):
+    """
+    Compute the lower boundary loss at S = 0.
+
+    For a European call option:
+
+        V(0, t) = 0
+
+    Parameters
+    ----------
+    model : torch.nn.Module
+        PINN model.
+
+    x_boundary : torch.Tensor
+        Points on the lower boundary S = 0.
+        Expected ordering: [t, S].
+
+    Returns
+    -------
+    torch.Tensor
+        Mean squared boundary-condition error.
+    """
+
+    prediction = model(x_boundary)
+
+    target = torch.zeros_like(prediction)
+
+    return mean_squared_error(prediction, target)
