@@ -123,3 +123,92 @@ def lower_boundary_loss(model, x_boundary):
     target = torch.zeros_like(prediction)
 
     return mean_squared_error(prediction, target)
+def total_loss(
+    model,
+    x_collocation,
+    x_terminal,
+    x_boundary,
+    sigma,
+    r,
+    K,
+    dividend=0.0,
+    pde_weight=100.0,
+    terminal_weight=1.0,
+    boundary_weight=1.0
+):
+    """
+    Compute the total PINN loss.
+
+    Total loss:
+
+        L = lambda_f L_f
+          + lambda_T L_T
+          + lambda_B L_B
+
+    Parameters
+    ----------
+    model : torch.nn.Module
+        PINN model.
+
+    x_collocation : torch.Tensor
+        Interior PDE collocation points.
+
+    x_terminal : torch.Tensor
+        Terminal-condition points.
+
+    x_boundary : torch.Tensor
+        Lower-boundary points.
+
+    sigma : float
+        Volatility.
+
+    r : float
+        Risk-free interest rate.
+
+    K : float
+        Strike price.
+
+    dividend : float
+        Dividend yield.
+
+    pde_weight : float
+        Weight of PDE loss.
+
+    terminal_weight : float
+        Weight of terminal-condition loss.
+
+    boundary_weight : float
+        Weight of boundary-condition loss.
+
+    Returns
+    -------
+    tuple
+        Total loss and individual loss components.
+    """
+
+    loss_f = pde_loss(
+        model,
+        x_collocation,
+        sigma,
+        r,
+        dividend
+    )
+
+    loss_terminal = terminal_condition_loss(
+        model,
+        x_terminal,
+        K
+    )
+
+    loss_boundary = lower_boundary_loss(
+        model,
+        x_boundary
+    )
+
+    total = (
+        pde_weight * loss_f
+        + terminal_weight * loss_terminal
+        + boundary_weight * loss_boundary
+    )
+
+    return total, loss_f, loss_terminal, loss_boundary
