@@ -63,3 +63,27 @@ def black_scholes_residual(model, x, sigma, r):
     )
 
     return residual
+def european_call_payoff(S, K):
+    """
+    Terminal payoff of a European call option.
+
+    V(S, T) = max(S - K, 0)
+
+    Parameters
+    ----------
+    S : torch.Tensor
+        Underlying asset prices.
+
+    K : float
+        Strike price.
+
+    Returns
+    -------
+    torch.Tensor
+        European call payoff.
+    """
+
+    return torch.maximum(
+        S - K,
+        torch.zeros_like(S)
+    )
