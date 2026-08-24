@@ -1,7 +1,9 @@
 """
 Main entry point for the Black-Scholes PINN project.
 """
+import random
 
+import numpy as np
 import torch
 
 from src.models.pinn import BlackScholesPINN
@@ -12,8 +14,19 @@ from src.physics.data import (
     generate_lower_boundary_points
 )
 from src.training.trainer import PINNTrainer
-def main():
+SEED = 42
 
+
+def set_seed(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+        
+def main():
+    set_seed(SEED)
     # =========================
     # Black-Scholes parameters
     # =========================
