@@ -88,7 +88,27 @@ def main():
     )
 
     print(f"Device: {device}")
+        # =========================
+    # Convert data to tensors
+    # =========================
 
+    x_collocation = torch.tensor(
+        x_collocation,
+        dtype=torch.float32,
+        device=device
+    )
+
+    x_terminal = torch.tensor(
+        x_terminal,
+        dtype=torch.float32,
+        device=device
+    )
+
+    x_boundary = torch.tensor(
+        x_boundary,
+        dtype=torch.float32,
+        device=device
+    )
     # =========================
     # Create PINN
     # =========================
