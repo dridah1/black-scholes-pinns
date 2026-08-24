@@ -1,8 +1,12 @@
 """
 Main entry point for the Black-Scholes PINN project.
 """
-
-
+import numpy as np
+from src.physics.data import (
+    generate_collocation_points,
+    generate_terminal_points,
+    generate_lower_boundary_points
+)
 def main():
 
     # =========================
@@ -42,7 +46,36 @@ def main():
     print(f"Risk-free rate: {r}")
     print(f"Dividend yield: {dividend}")
     print(f"Maturity: {T}")
+        # =========================
+    # Generate training data
+    # =========================
 
+    x_collocation = generate_collocation_points(
+        num_points=num_collocation,
+        S_min=S_min,
+        S_max=S_max,
+        t_min=t_min,
+        t_max=t_max
+    )
+
+    x_terminal = generate_terminal_points(
+        num_points=num_terminal,
+        S_min=S_min,
+        S_max=S_max,
+        T=T
+    )
+
+    x_boundary = generate_lower_boundary_points(
+        num_points=num_boundary,
+        t_min=t_min,
+        t_max=t_max
+    )
+
+    print()
+    print("Training data generated:")
+    print(f"Collocation points: {x_collocation.shape}")
+    print(f"Terminal points:    {x_terminal.shape}")
+    print(f"Boundary points:    {x_boundary.shape}")
 
 if __name__ == "__main__":
     main()
