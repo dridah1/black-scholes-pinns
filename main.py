@@ -1,6 +1,9 @@
 """
 Main entry point for the Black-Scholes PINN project.
 """
+import torch
+
+from src.models.pinn import BlackScholesPINN
 import numpy as np
 from src.physics.data import (
     generate_collocation_points,
@@ -76,6 +79,26 @@ def main():
     print(f"Collocation points: {x_collocation.shape}")
     print(f"Terminal points:    {x_terminal.shape}")
     print(f"Boundary points:    {x_boundary.shape}")
+        # =========================
+    # Device
+    # =========================
 
+    device = torch.device(
+        "cuda" if torch.cuda.is_available() else "cpu"
+    )
+
+    print(f"Device: {device}")
+
+    # =========================
+    # Create PINN
+    # =========================
+
+    model = BlackScholesPINN(
+        input_dim=2,
+        hidden_dim=50,
+        num_hidden_layers=9
+    ).to(device)
+
+    print(model)
 if __name__ == "__main__":
     main()
