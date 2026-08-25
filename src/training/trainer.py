@@ -107,7 +107,7 @@ class PINNTrainer:
             self.history["terminal_loss"].append(loss_terminal)
             self.history["boundary_loss"].append(loss_boundary)
 
-            if epoch % 100 == 0:
+            if epoch % 10 == 0:
                 print(
                     f"Epoch {epoch:5d} | "
                     f"Total: {loss:.6e} | "
